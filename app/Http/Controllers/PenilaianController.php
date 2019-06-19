@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Helpers\Berliana;
 use App\Satpam;
 use App\User;
-use App\Penilaian;
+use App\NilaiAwal;
 
 class PenilaianController extends Controller 
 {
@@ -24,9 +24,9 @@ class PenilaianController extends Controller
     return null;
   }
 
-  public function nilai(Request $req, Penilaian $penilaian)
+  public function nilai(Request $req, NilaiAwal $nilai_awal)
   {
-    $data_nilai = $penilaian->all();
+    $data_nilai = $nilai_awal->all();
     $berliana = new Berliana();
     $result = $berliana->normalisasiMatriks($data_nilai);
     return ['null'];

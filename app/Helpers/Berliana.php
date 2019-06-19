@@ -1,53 +1,65 @@
 <?php
 
 namespace App\Helpers;
-use DB;
+use App\kriteria;
 use App\NilaiAwal;
 use App\NilaiNormalisasi;
 use App\Booking;
+use DB;
 
 class Berliana {
-  //variabel nilai kriteria
-  public function nilaiKriteria() {
-    $data = [
-      'tm' => 0,
-      'km' => 0.25,
-      'c' => 0.5,
-      'b' => 0.75,
-      'sb' => 1
-    ];
-    return $data;
-  }
-
   //varibel bobot kriteria
   public function bobotKriteria() {
-    $data = (object) [
-      'c1' => 0.2,
-      'c2' => 0.25,
-      'c3' => 0.25,
-      'c4' => 0.15,
-      'c5' => 0.15
-    ];
+    $data = Kriteria::all();
 
     return $data;
   }
 
   public function normalisasiMatriks($data) {
-    $booking = new Booking;
-    $nilai_awal = new NilaiAwal;
-    $nilai_normalisasi = new NilaiNormalisasi;
-    $kriterias = DB::table('kriteria')->all();
+    $nilai_awal = [];
+    $nilai_normalisasi = [];
+    $total = 0.0;
+    $kriterias = $this->bobotKriteria(); // get semua kriteria
 
-    $satpams = $booking->where('user_id','=',2);
+    $satpams = Booking::where('user_id','=',2)->get(); // get semua satpam pada user x
 
     foreach ($satpams as $satpam) {
-      foreach($kriterias as $kriteria) {
-        $x = $nilai_awal->where('user_id','=',2)
-        ->where('satpam','=',$satpam->id)
-        ->where('kriteria','=',$kriteria->id)->get();
-      }
-    }
 
-    dd($data);
+      foreach($kriterias as $kriteria) {
+        $x = NilaiAwal::where('user_id','=',2)
+        ->where('satpam','=',$satpam->satpam_id)
+        ->where('kriteria','=',$kriteria->id)
+        ->where('created_at','like','%2019-06-16%')->first();
+
+        $xmax = DB::table('nilai_awal')->where([
+          ['user_id','=',2],
+          ['kriteria','=',$kriteria->id]
+        ])->pluck('nilai')->toArray();
+        
+        $normal = $x->nilai/max($xmax); // hasil nilai normalisasi
+        $nilai_awal[] = $x->nilai; // menyimpan nilai awal
+        $nilai_normalisasi[] = $normal; // menyimpan nilai normalisasi
+
+        $total += ($normal*$kriteria->bobot); // menghitung total
+      }
+
+      $tmp[] = $total;
+      $total = 0.0;
+      // $normalisasi_create = NilaiNormalisasi::create([
+      //   'user_id' => 2,
+      //   'satpam' => $satpam->satpam_id,
+      //   'nilai_awal' => implode(',',$nilai_awal),
+      //   'nilai_normalisasi' => implode(',',$nilai_normalisasi)
+      // ]);
+
+      // NilaiAwal::where([
+      //   ['user_id','=',2],
+      //   ['satpam','=',$satpam->satpam_id],
+      //   ['created_at','like','%2019-06-16%']
+      // ])->delete();
+
+    }
+    arsort($tmp);
+    dd($tmp);
   }
 }

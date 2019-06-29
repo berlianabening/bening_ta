@@ -7,13 +7,21 @@ use App\Helpers\Berliana;
 use App\Satpam;
 use App\User;
 use App\NilaiAwal;
+use App\NilaiNormalisasi;
 
 class PenilaianController extends Controller 
 {
+  public function __construct() {
+    $this->main = new NilaiAwal();
+  }
 
-  public function index(Penilaian $penilaian)
+  public function index(NilaiAwal $nilai_awal)
   {
-    
+    $data_nilai = $nilai_awal->all();
+    $berliana = new Berliana();
+    $result = NilaiNormalisasi::all();
+
+    return view('pages.penilaian',compact('result'));
   }
 
   public function store(Request $req, Penilaian $penilaian)

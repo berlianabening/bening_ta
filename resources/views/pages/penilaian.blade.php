@@ -48,7 +48,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($absensi as $x => $i)
+          @foreach ($result as $x => $i)
             <tr>
               <td>{{$x+1}}</td>
               <td>{{$i->satpam->no_induk}}</td>

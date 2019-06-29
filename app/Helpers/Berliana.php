@@ -44,13 +44,16 @@ class Berliana {
       }
 
       $tmp[] = $total;
+      
+      $normalisasi_create = NilaiNormalisasi::create([
+        'user_id' => 2,
+        'satpam' => $satpam->satpam_id,
+        'nilai_awal' => implode(',',$nilai_awal),
+        'nilai_normalisasi' => implode(',',$nilai_normalisasi),
+        'total' => $total
+      ]);
+
       $total = 0.0;
-      // $normalisasi_create = NilaiNormalisasi::create([
-      //   'user_id' => 2,
-      //   'satpam' => $satpam->satpam_id,
-      //   'nilai_awal' => implode(',',$nilai_awal),
-      //   'nilai_normalisasi' => implode(',',$nilai_normalisasi)
-      // ]);
 
       // NilaiAwal::where([
       //   ['user_id','=',2],

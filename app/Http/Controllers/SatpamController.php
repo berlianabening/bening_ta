@@ -4,13 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Satpam;
+use Auth;
 
 class SatpamController extends Controller 
 {
 
+  public function __construct()
+  {
+    $this->middleware('auth');
+  }
+
   public function index(Satpam $satpam)
   {
-    $satpam = $satpam->all();
+    if (Auth::user()->role_id == 1) {
+      $satpam = $satpam->all();
+    }
+    else {
+      $satpam = $satpam
+      ->join('booking','booking.satpam_id','=','satpam.id')
+      ->where('booking.user_id','=',Auth::user()->id)
+      ->get();
+    }
+
     return view('pages.satpam',compact('satpam'));
   }
 
@@ -21,6 +36,7 @@ class SatpamController extends Controller
    */
   public function store(Request $request, Satpam $satpam)
   {
+    $request['status'] = 1;
     $satpam->create($request->only(['no_induk','nama','status']));
 
     return response()->json('Sukses');
@@ -43,9 +59,10 @@ class SatpamController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function update(Satpam $satpam)
+  public function update(Satpam $satpam, Request $req)
   {
-    
+    $satpam->update($req->all());
+    return response()->json($req->all());
   }
 
   /**
@@ -54,9 +71,10 @@ class SatpamController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy(Satpam $satpam)
   {
-    
+    $satpam->delete();
+    return response()->json('ok');
   }
   
 }

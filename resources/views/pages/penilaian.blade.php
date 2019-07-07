@@ -6,30 +6,7 @@
     <div class="col-12 mt-5">
       <h3 class="top_title">Data Penilaian</h3>
     </div>
-    <div class="col-12 col-md-3">
-      <select class="custom-select custom-select-sm" name="user" id="user">
-        @foreach ($user as $x => $i)
-          <option value="{{$i->id}}">{{$i->namauser}}</option>
-        @endforeach
-      </select>
-    </div>
     <div class="col-12 mt-5">
-      <div class="float-left d-inline-block">
-        <select class="custom-select custom-select-sm" name="user" id="user">
-          <option selected>Bulan</option>
-          @foreach ($user as $x => $i)
-            <option value="{{$i->id}}">{{$i->namauser}}</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="float-left d-inline-block ml-3">
-        <select class="custom-select custom-select-sm" name="user" id="user">
-          <option selected>Tahun</option>
-          @foreach ($user as $x => $i)
-            <option value="{{$i->id}}">{{$i->namauser}}</option>
-          @endforeach
-        </select>
-      </div>
       <div class="float-right">
         <input class="form-control form-control-sm" type="text" name="search" id="search" placeholder="Search...">
       </div>
@@ -41,22 +18,34 @@
             <th>No.</th>
             <th>No. Induk</th>
             <th>Nama</th>
-            <th>Hadir</th>
-            <th>Ijin</th>
-            <th>Alpa</th>
-            <th>Total (%)</th>
+            <th>K1</th>
+            <th>K2</th>
+            <th>K3</th>
+            <th>K4</th>
+            <th>K5</th>
+            <th>Hasil</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($result as $x => $i)
             <tr>
               <td>{{$x+1}}</td>
-              <td>{{$i->satpam->no_induk}}</td>
-              <td>{{$i->satpam->nama}}</td>
-              <td>{{$i->h}}</td>
-              <td>{{$i->i}}</td>
-              <td>{{$i->a}}</td>
-              <td>{{$i->total}}</td>
+              <td>{{$i->satpams->no_induk}}</td>
+              <td>{{$i->satpams->nama}}</td>
+              @php
+              $kriteria = explode(',',$i->nilai_normalisasi);
+              @endphp
+              {{-- <td>{{ ($kriteria[0]) }}</td>
+              <td>{{ ($kriteria[1]) }}</td>
+              <td>{{ ($kriteria[2]) }}</td>
+              <td>{{ ($kriteria[3]) }}</td>
+              <td>{{ ($kriteria[4]) }}</td> --}}
+              <td>{{ round($kriteria[0],2) }}</td>
+              <td>{{ round($kriteria[1],2) }}</td>
+              <td>{{ round($kriteria[2],2) }}</td>
+              <td>{{ round($kriteria[3],2) }}</td>
+              <td>{{ round($kriteria[4],2) }}</td>
+              <td>{{ round($i->total,2) }}</td>
             </tr>
           @endforeach
         </tbody>

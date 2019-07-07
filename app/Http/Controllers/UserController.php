@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Satpam;
+use App\Booking;
 
 class UserController extends Controller 
 {
+  public function __construct() {
+    $this->main = new User;
+  }
 
   public function index()
   {
     $data = (object) [
-      'user' => User::where('role_id','=',2)->get()
+      'user' => User::where('role_id','=',2)->get(),
+      'satpam' => Satpam::all()
     ];
     return view('pages.user',compact('data'));
   }
@@ -33,7 +39,14 @@ class UserController extends Controller
    */
   public function store(Request $request)
   {
+    $request['status'] = 1;
+    $request['password'] = bcrypt($request['nomor']);
+    $request['username'] = $request['nomor'];
+    $request['role_id'] = 2;
     
+    $this->main->create($request->all());
+
+    return response()->json('Sukses');
   }
 
   /**
@@ -58,28 +71,30 @@ class UserController extends Controller
     
   }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
+  public function update(Request $req, $id)
   {
-    
+    $main = $this->main->find($id);
+    $main->update($req->all());
+
+    return response()->json('ok');
   }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
   public function destroy($id)
   {
     
   }
-  
+
+  public function get_satpam(Request $req, $id_user) {
+    $satpam = Satpam::all();
+    $booking = Booking::find($id_user);
+
+    return view('pages.admin.insert_satpam', compact('satpam','booking'));
+  }
+
+  public function insert_satpam(Request $req, $id_user) {
+    dd($req->all());
+    $booking = Booking::create($req->all());
+  }
 }
 
 ?>

@@ -52,7 +52,9 @@ class Berliana {
         'nilai_normalisasi' => implode(',',$nilai_normalisasi),
         'total' => $total
       ]);
-
+      
+      $nilai_awal = [];
+      $nilai_normalisasi = [];
       $total = 0.0;
 
       // NilaiAwal::where([

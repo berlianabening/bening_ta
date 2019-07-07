@@ -5,10 +5,22 @@
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
     <a class="navbar-brand" href="#">Bening</a>
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="/user">Home</a>
+      @if (Auth::user()->role_id == 1)
+      <a class="nav-item nav-link" href="/user">User</a>
       <a class="nav-item nav-link" href="/satpam">Satpam</a>
       <a class="nav-item nav-link" href="/dokumen_absensi">Dokumen Absensi</a>
       <a class="nav-item nav-link" href="/penilaian">Dokumen Penilaian</a>
+      @else
+      <a class="nav-item nav-link" href="/usr/satpam">Absensi</a>
+      <a class="nav-item nav-link" href="/usr/satpam">Data Penilaian</a>
+      @endif
+
+      <a class="nav-item nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+          Logout
+      </a>
+      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+          @csrf
+      </form>
     </div>
   </div>
 </nav>
